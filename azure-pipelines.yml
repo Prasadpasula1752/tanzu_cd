@@ -42,28 +42,28 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'sed "s|imagename|$(repo):$(imagetag)|g" $(System.DefaultWorkingDirectory)/cd/deployment.yaml > $(System.DefaultWorkingDirectory)/cd/deployment_cd.yaml'
+    script: 'sed "s|imagename|$(repo):$(imagetag)|g" $(System.DefaultWorkingDirectory)/tanzu_cd/deployment.yaml > $(System.DefaultWorkingDirectory)/tanzu_cd/deployment_cd.yaml'
 
 - task: CmdLine@2
   inputs:
-    script: cat $(System.DefaultWorkingDirectory)/cd/deployment_cd.yaml
+    script: cat $(System.DefaultWorkingDirectory)/tanzu_cd/deployment_cd.yaml
 
 
 - task: CmdLine@2
   inputs:
     script: git add .
-    workingDirectory: $(System.DefaultWorkingDirectory)/cd
+    workingDirectory: $(System.DefaultWorkingDirectory)/tanzu_cd
 
 
 - task: CmdLine@2
   inputs:
     script: git commit -m 'Done by azure devops image building pipeline $(imagetag) [skip ci]'
-    workingDirectory: $(System.DefaultWorkingDirectory)/cd
+    workingDirectory: $(System.DefaultWorkingDirectory)/tanzu_cd
 
 - task: CmdLine@2
   inputs:
     script: git push origin HEAD:main
-    workingDirectory: $(System.DefaultWorkingDirectory)/cd
+    workingDirectory: $(System.DefaultWorkingDirectory)/tanzu_cd
 
 - checkout: self
   clean: true
