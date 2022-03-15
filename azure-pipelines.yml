@@ -1,0 +1,58 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger:
+- none
+
+resources:
+  pipelines:
+  - pipeline: imagebuilding
+    source: Prasadpasula1752.tanzu_ci
+    trigger: 
+      branches:
+        include: 
+        - main
+
+variables:
+- group: Prasadvar
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- checkout: self
+  persistCredentials: true
+
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      git config --global user.email "$(email)"
+      git config --global user.name "$(name)"
+
+- task: CmdLine@2
+  inputs:
+    script: 'sed "s|imagename|$(repo):$(imagetag)|g" $(System.DefaultWorkingDirectory)/cd/deployment.yaml > $(System.DefaultWorkingDirectory)/cd/deployment_cd.yaml'
+
+
+
+
+- task: CmdLine@2
+  inputs:
+    script: git add .
+    workingDirectory: $(System.DefaultWorkingDirectory)/cd
+
+
+- task: CmdLine@2
+  inputs:
+    script: git commit -m 'Done by azure devops image building pipeline $(imagetag) [skip ci]'
+    workingDirectory: $(System.DefaultWorkingDirectory)/cd
+
+- task: CmdLine@2
+  inputs:
+    script: git push origin HEAD:main
+    workingDirectory: $(System.DefaultWorkingDirectory)/cd
+
+- checkout: self
+  clean: true
