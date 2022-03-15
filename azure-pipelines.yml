@@ -24,18 +24,29 @@ steps:
 - checkout: self
   persistCredentials: true
 
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
 
 - task: CmdLine@2
   inputs:
     script: |
       git config --global user.email "$(email)"
       git config --global user.name "$(name)"
+- task: CmdLine@2
+  inputs:
+    script: pwd
 
 - task: CmdLine@2
   inputs:
-    script: 'sed -i "s|imagename|$(repo):$(imagetag)|g" $(System.DefaultWorkingDirectory)/cd/deployment.yaml > $(System.DefaultWorkingDirectory)/cd/deployment_cd.yaml'
+    script: ls -la
 
+- task: CmdLine@2
+  inputs:
+    script: 'sed "s|imagename|$(repo):$(imagetag)|g" $(System.DefaultWorkingDirectory)/cd/deployment.yaml > $(System.DefaultWorkingDirectory)/cd/deployment_cd.yaml'
 
+- task: CmdLine@2
+  inputs:
+    script: cat $(System.DefaultWorkingDirectory)/cd/deployment_cd.yaml
 
 
 - task: CmdLine@2
